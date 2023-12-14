@@ -1,0 +1,26 @@
+{% load static %}
+<header class="site-header">
+	<nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+		<a class="navbar-brand" href="{% url 'home' %}">
+		<img src="{% static 'main/images/qw.png' %}" alt="Logo" width="40px"> 
+		{% if user.is_authenticated %}
+			SISTEMA INFORMASAUN STOCK RAN
+		{%else%}
+			Sistema Informasaun Stok Ran iha Banco de Sangue
+		{%endif%}
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		{% if user.is_authenticated %}
+			{% if user.groups.all.0.name == 'admin' %}
+				{% include 'navbar/navbarAdmin.html' %}
+			{% elif user.groups.all.0.name == 'ubloodbank' %}
+				{% include 'navbar/navbarBloodBank.html' %}
+			{% elif user.groups.all.0.name == 'uenfermaria' %}
+				{% include 'navbar/navbarEnfermaria.html' %}
+			{% endif %}
+		{% endif %}
+	</nav>
+</header>
+<hr/>

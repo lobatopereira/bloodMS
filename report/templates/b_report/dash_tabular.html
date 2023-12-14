@@ -1,0 +1,205 @@
+{% extends "main/layout.html" %}
+{% load static %}
+{% block content %}
+<section>
+    <div class="container mt-2">
+	      <!-- Page Header-->
+	    <header> 
+	        <ol class="breadcrumb mb-1 mt-1">
+	          <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+	          <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+	        </ol>
+	    </header>
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card shadow-lg pt-1 rounded">
+						<div class="card-header d-flex justify-content-end text-center">
+		                  <div class="text-center border">
+		                     <a href="{% url 'b-dash-charts' %}" class="btn btn-sm btn-dark" title="Relatoriu Tabular"><i class="fa fa-list"></i> Relatoriu Grafiku</a>
+		                  </div>
+		                </div>
+						<div class="card-body">
+							<center>
+								<h3>{{ title|upper }}</h3>
+							</center>
+							<hr/>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="card bg-danger">
+										<div class="card-body" style="color: white;">
+											<center> TOTAL PAKOTE RAN IHA BANCO <h2 style="margin-bottom: 0;">
+												<a href="{% url 'home' %}" style="color: white; text-decoration: underline;">{{ totalActivuPackage }}</a>
+											</h2></center>
+										</div>
+									</div>
+								</div><!--end col-->
+								<div class="col-sm-6">
+									<div class="card bg-dark">
+										<div class="card-body" style="color: white;">
+											<center> TOTAL PAKOTE RAN NE'EBE UZA ONA <h2 style="margin-bottom: 0;">
+												<a href="{% url 'home' %}" style="color: white; text-decoration: underline;">{{ totalUsedPackage }}</a>
+											</h2></center>
+										</div>
+									</div>
+								</div><!--end col-->
+							</div>
+							<hr/>
+							<div class="row">
+								<div class="col-sm-4">
+									<div class="card">
+										<div class="card-body">
+		                                    <h5 align="center">Total Pakote Ran iha Banco</h5><hr/>
+											<table class="table table-sm responsive table-bordered" style="width:100%">
+												<thead>
+													<tr>
+														<th class="text-center">Nu</th>
+														<th class="text-center">Grupu Ran</th>
+		                                                <th class="text-center">Total Pakote</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for data in stockSumary %}
+													<tr>
+														<td class="text-center">{{ forloop.counter }}</td>
+														<td class="text-center"> {{ data.0 }}</td>
+		                                                <td class="text-center"><a href="{% url 'home' %}">{{ data.1 }}</a></td>
+		                                            </tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div class="card">
+										<div class="card-body">
+		                                    <h5 align="center">Total Pedidu tuir Enfermaria</h5><hr/>
+											<table class="table table-sm responsive table-bordered" style="width:100%">
+												<thead>
+													<tr>
+														<th class="text-center">Nu</th>
+														<th class="text-center">Enfermaria</th>
+		                                                <th class="text-center">Total Pedidu</th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for data in SumariuPedidu %}
+													<tr>
+														<td class="text-center">{{ forloop.counter }}</td>
+														<td class="text-center"> {{ data.1 }}</td>
+		                                                <td class="text-center"><a href="{% url 'home' %}">{{ data.2 }}</a></td>
+		                                            </tr>
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div> <!--end col-->
+								<div class="col-sm-8">
+									<div class="card">
+										<div class="card-body">
+											<h5 align="center">Total Ran Tama no Uza tuir fulan iha tinan {{currentYear}}</h5><hr/>
+											<section id='no-more-tables'>
+												<table id="#" class="table table-sm" style="width:100%">
+													<tr class="text-center">
+														<th>Nu</th>
+														<th>Fulan</th>
+														<th>Tama</th>
+														<th>Uza</th>
+														<th>Armazena</th>
+														<th>Status Progresu Uza</th>
+														<th>Sai</th>
+													</tr>
+													{% for data in dadus_tinan_agora %}
+													<tr class="text-center">
+		                                                <td>{{forloop.counter}}</td>
+		                                                <td>{{data.1}}</td>
+		                                                <td>{{data.2}}</td>
+		                                                <td>{{data.3}}</td>
+		                                                <td>{{data.4}}</td>
+		                                                <td><progress value="{{data.3}}" max="{{data.2}}"> 32% </progress></td>
+		                                                <td>{{data.5}}</td>
+													</tr>
+													{%endfor%}
+												</table>
+											</section>
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr/>
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="card">
+										<div class="card-body">
+		                                    <h5 align="center">Total Pasiente tuir Grupu Ran no Seksu</h5><hr/>
+											<table id="#" class="table table-bordered table-sm" style="width:100%">
+					                            <tr>
+					                                <th rowspan="2" class="text-center">Nu</th>
+					                                <th rowspan="2" class="text-center">Seksu</th>
+					                                <th colspan="{{bloodGroup|length}}" class="text-center">Grupu Ran</th>
+					                            </tr>
+					                            <tr>
+					                                {% for i in bloodGroup %}
+					                                <th class="text-center">{{i}}</th>
+					                                {% endfor %}
+					                            </tr>
+					                            {% for data in SumariuPasiente %}
+					                            <tr>
+					                                <td data-title="Nu." class="text-center">{{ forloop.counter }}</td>
+					                                <td data-title="Seksu" class="text-center">{{ data.0.sex }}</td>
+					                                {% for i in data.1 %}
+					                                    <td class="text-center"><a href="{% url 'home' %}">{{ i.total }}</a></td>
+					                                {% endfor %}
+					                            </tr>
+					                            {% endfor %}
+					                        </table>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<div class="card">
+										<div class="card-body">
+		                                    <h5 align="center">Total Ran Tama no Uza tuir tinan</h5><hr/>
+											<table id="#" class="table table-sm" style="width:100%">
+													<tr class="text-center">
+														<th>Nu</th>
+														<th>Tinan</th>
+														<th>Tama</th>
+														<th>Uza</th>
+														<th>Armazena</th>
+														<th>Sai</th>
+													</tr>
+													{% for data in dadus_pakote_tuir_tinan %}
+													<tr class="text-center">
+		                                                <td>{{forloop.counter}}</td>
+		                                                <td>{{data.0}}</td>
+		                                                <td>{{data.1}}</td>
+		                                                <td>{{data.2}}</td>
+		                                                <td>{{data.3}}</td>
+		                                                <td>{{data.4}}</td>
+													</tr>
+													{%endfor%}
+												</table>
+										</div>
+									</div>
+								</div>
+
+								
+							</div><!--end row-->
+							
+						</div> <!--end card-body-->
+					</div> <!--end card-->
+				</div> <!--end col-->
+			</div> <!--end row-->
+	</div>
+</section>
+{% endblock %}
+{% block scripts %}
+<!-- Charts-->
+<script type="text/javascript">
+	$(document).ready( function () {
+		var table = $('#example').removeAttr('width').DataTable( {
+			
+		});
+	} );
+</script>
+{% endblock %}

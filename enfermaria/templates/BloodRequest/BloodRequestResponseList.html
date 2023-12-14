@@ -1,0 +1,214 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<section class="container">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              {% if page == "form" %}
+              <li class="breadcrumb-item"><a href="{% url 'e-blood-request-list' %}">Lista Pedidu</a></li>
+              {%endif%}
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+          {% if page == "list" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-end text-center">
+                  <div class="text-center border">
+                     <a href="{% url 'e-blood-request-add' %}" class="btn btn-sm btn-info" title="Add Data"><i class="fa fa-plus-square"></i> Adisiona Pedidu</a>
+                  </div>
+                  <div class="text-center border">
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>No</th>
+                          <th>Pasiente</th>
+                          <th>Data Pedidu</th>
+                          <th>Grupu RAN</th>
+                          <th class="text-center">Pakote RAN</th>
+                          <th width="15%">Asaun</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in BloodRequestList %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{data.patient}}</td>
+                          <td>{{data.date_of_request}}</td>
+                          <td>{{data.patient.bloodGroup}}</td>
+                          <td class="text-center">{{data.package}} 
+                            {% if data.is_sent == True and data.is_approved == False %}
+                            <i class="badge badge-warning">On Process</i>
+                            {% endif %}
+                          </td>
+                          <td>
+                            <div class="d-flex justify-content-center"> 
+                              {% if data.is_sent == False and data.is_rejected == False %}
+                                {% if data.is_locked == False %}
+                                <div class="flex-fill mr-1"><a href="{% url 'home' %}" class="btn btn-sm btn-success" title="Altera Implementasaun Programa"><i class="fa fa-pencil"></i> </a></div>
+                                <div class="flex-fill mr-1"><a href="{% url 'e-blood-request-lock' data.hashed %}" class="btn btn-sm btn-danger" title="Xave dadus"><i class="fa fa-lock"></i> </a></div>
+                                {% else %}
+                                <div class="flex-fill mr-1"><a href="{% url 'e-blood-request-send' data.hashed %}" class="btn btn-sm btn-warning" title="Manda"><i class="fa fa-send"></i> </a></div>
+                                <div class="flex-fill mr-1"><a href="{% url 'e-blood-request-unlock' data.hashed %}" class="btn btn-sm btn-danger" title="Xave dadus"><i class="fa fa-unlock"></i> </a></div>
+                                {% endif %}
+                              {% endif %}
+                              <div class="flex-fill mr-1"><a href="{% url 'home' %}" class="btn btn-sm btn-info" title="Detallu Programa"><i class="fa fa-list"></i> </a></div>
+                            </div>  
+                          </td>
+
+                          <div class="modal fade" id="delete-{{ data.id}}"><!-- modal -->
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Delete Enfermaria</h4>
+                                  <button type="button" class="close" data-dismiss="modal">X</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                  Ita Boot hakarak hamoos Dadus Enfermaria ho naran {{data.name}}?
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                  <a href="{% url 'deleteEnfermaria' data.id %}" class="btn btn-info">Yes</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div><!-- endmodal -->
+                        </tr>
+                        {% endfor %}
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% if page == "form" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex text-center">
+                  {{title}}
+                </div>
+                <div class="card-body">
+                  {% csrf_token %}
+                  {% crispy form %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% if page == "detail" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex text-center">
+                  {{title}}
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <table class="table table-bordered">
+                        <tr><td colspan="2" class="text-center">Dadus Pasiente</td></tr>
+                        <tr><td>Naran Pasiente</td><td>{{bloodRequest.patient}}</td></tr>
+                        <tr><td>Seksu</td><td>{{bloodRequest.patient.sex}}</td></tr>
+                        <tr><td>Enderesu</td><td>{{bloodRequest.patient.address}}</td></tr>
+                        <tr><td>Grupu RAN</td><td>{{bloodRequest.patient.bloodGroup}}</td></tr>
+                        <tr><td>Presaun</td><td>{{bloodRequest.patient.pressure}}</td></tr>
+                        <tr><td>Todan</td><td>{{bloodRequest.patient.weight}}</td></tr>
+                      </table>
+                    </div>
+                    <div class="col-sm-6">
+                      <table class="table table-bordered">
+                        <tr><td colspan="2" class="text-center">Dadus Pedidu ba RAN</td></tr>
+                        <tr><td>Data Pedidu</td><td>{{bloodRequest.date_of_request|date:"d-M-Y"}}</td></tr>
+                        <tr><td>Enfermaria</td><td>{{bloodRequest.enfermaria}}</td></tr>
+                        <tr><td>Pakote</td><td>{{bloodRequest.package}}</td></tr>
+                      </table>
+                      <br>
+                      <p class="badge badge-info">Dadus Pakote RAN ne'ebe suporta ba pasiente!</p>
+                      <div class="row">
+                      {% for data in bloodRequestResponse %}
+                        <div class="col-sm-3">
+                          <div class="border border-danger">
+                            <div class="pb-1" style="color: black;">
+                              <center> 
+                                <small class=""> {{ data.doador.doador.firstname }}</small>
+                              </center>
+                              <center> 
+                                <small class=" badge badge-danger"> Pakote : {{ data.doador.package }}</small>
+                            </div>
+                          </div>
+                        </div><!--end col-->
+                      {%endfor%}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-end">
+                    {% if bloodRequest.is_respond == True and bloodRequest.is_approved == False %}
+                    <div class="flex-fill"> <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#delete-{{bloodRequest.hashed}}" style="text-decoration: none"><i class="fa fa-trash"></i></button></div>
+                    <a href="{% url 'b-blood-request-response-confirm' bloodRequest.hashed %}" class="btn btn-sm btn-outline-success ml-2"><i class="fa fa-check border"></i> Konfirma</a>
+                    {% elif bloodRequest.is_respond == False %}
+                    <a href="{% url 'b-blood-request-response-add' bloodRequest.hashed %}" class="btn btn-sm btn-outline-success ml-2" title="Responde Pedidu"><i class="fa fa-edit"></i> <small> Responde</small></a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- modal -->
+          <div class="modal fade" id="delete-{{bloodRequest.hashed}}"><!-- modal -->
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Delete Dadus Resposta ba Pedidu RAN</h4>
+                    <button type="button" class="close" data-dismiss="modal">X</button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    Ita Boot hakarak hamoos Dadus Resposta ba Pedidu RAN?
+                  </div>
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    <a href="{% url 'b-blood-request-response-delete' bloodRequest.hashed %}" class="btn btn-info">Yes</a>
+                  </div>
+                </div>
+              </div>
+          </div><!-- endmodal -->
+          {% endif %}
+      </section>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

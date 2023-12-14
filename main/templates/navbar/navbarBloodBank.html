@@ -1,0 +1,41 @@
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="nav navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link" id="notifDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: rgb(255,255,255);"><i class="fa fa-bell"></i> <span id="notifbadge" class="badge badge-warning" style="float:right;margin-top:-8px; margin-left:-10px;"></span></a>
+          <div class="dropdown-menu dropdown-menu-left" aria-labelledby="notifDropdown" style="margin-top: -10px; font-size: 12px">
+            <a class="dropdown-item" href="{% url 'NotifListaPediduRAN' %}">
+              Pedidu Foun (<strong><span id="notifbloodrequest"></span></strong>)
+            </a>
+          </div>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item {{bloodstock_active}}"><a class="nav-link" href="{% url 'BloodStockList' %}"><i class="fa fa-list"></i> STOCK RAN </a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle {{active_doador}}" href="#" id="doador" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i> DOAR</a>
+          <div class="dropdown-menu" aria-labelledby="doador">
+            <a class="dropdown-item" href="{% url 'doador-list' %}"><i class="fa fa-users"></i> Doador</a>
+            <a class="dropdown-item" href="{% url 'home' %}"><i class="fa fa-users"></i> Substituisaun</a>
+          </div>
+        </li>
+        <li class="nav-item {{active_patient}}"><a class="nav-link" href="{% url 'b-patient-list' %}"><i class="fa fa-users"></i> PASIENTE </a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle {{report_active}}" href="#" id="relatoriu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list"></i> RELATORIU</a>
+          <div class="dropdown-menu" aria-labelledby="relatoriu">
+            <a class="dropdown-item" href="{% url 'b-report-dash-tabular' %}"><i class="fa fa-list"></i> Tabular</a>
+            <a class="dropdown-item" href="{% url 'b-dash-charts' %}"><i class="fa fa-list"></i> Grafiku</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-o"></i> {{ request.user.username|upper }}</a>
+          <div class="dropdown-menu" aria-labelledby="profile">
+            <a class="dropdown-item" href="{% url 'UserProfile' %}"><i class="fa fa-user-o"></i> Profile</a>
+            <a class="dropdown-item" href="{% url 'manageAccount' %}"><i class="fa fa-cog"></i> Account</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
+          </div>
+        </li>
+
+      </ul>
+    </div>

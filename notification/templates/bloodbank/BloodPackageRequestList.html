@@ -1,0 +1,151 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<section class="container">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              {% if page == "form" %}
+              <li class="breadcrumb-item"><a href="{% url 'NotifListaPediduRAN' %}">Lista Pedidu</a></li>
+              {%endif%}
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+          {% if page == "list" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-end text-center">
+                  <a href="{% url 'b-list-blood-request-respond-true' %}" class="btn btn-primary btn-sm"><i class="fa fa-list"></i> Lista Pedidu Pakote RAN ne'ebe Responde ona</a>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>No</th>
+                          <th>Enfermaria</th>
+                          <th>Pasiente</th>
+                          <th>Data Pedidu</th>
+                          <th>Grupu RAN</th>
+                          <th>Pakote RAN</th>
+                          <th>Status Prosesu</th>
+                          <th width="15%" class="text-center">Asaun</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in objects %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{data.enfermaria}}</td>
+                          <td>{{data.patient}}</td>
+                          <td>{{data.date_of_request}}</td>
+                          <td>{{data.patient.bloodGroup}}</td>
+                          <td>{{data.package}}</td>
+                          <td>{% if data.is_respond  == True %}<small class="badge badge-secondary">Responde ona</small>{% else %}<small class="badge badge-warning">Seidauk Responde</small>{% endif %}</td>
+                          <td>
+                            <div class="d-flex justify-content-center">
+                              <div class="flex-fill mr-1"><a href="{% url 'b-blood-request-response-detail' data.hashed %}" class="btn btn-sm btn-info" title="Detallu Pedidu"><i class="fa fa-eye"></i> <small></small></a></div>
+                              {% if data.is_respond  == False %}
+                              <div class="flex-fill mr-1"><a href="{% url 'b-blood-request-response-add' data.hashed %}" class="btn btn-sm btn-success" title="Responde Pedidu"><i class="fa fa-edit"></i> <small> Responde</small></a></div>
+                              {%endif%}
+                            </div>  
+                          </td>
+
+                          <div class="modal fade" id="delete-{{ data.id}}"><!-- modal -->
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Delete Enfermaria</h4>
+                                  <button type="button" class="close" data-dismiss="modal">X</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                  Ita Boot hakarak hamoos Dadus Enfermaria ho naran {{data.name}}?
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                  <a href="{% url 'deleteEnfermaria' data.id %}" class="btn btn-info">Yes</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div><!-- endmodal -->
+                        </tr>
+                        {% endfor %}
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <p class="badge badge-success">Dadus Pedidu Bazeia ba Grupu RAN</p>
+          <hr>
+          <ol class="breadcrumb mb-2 mt-1">
+                <li class="breadcrumb-item"><a style="text-decoration: none;" href="{% url 'NotifListaPediduRAN' %}">All <span class="badge badge-warning">{{ listaPediduAll }}</span></a></li>
+            {% for t in sumariuGrupuRan %}
+                <li class="breadcrumb-item"><a style="text-decoration: none;" href="{% url 'NotifListaPediduBazeiaGrupuRAN' t.id %}">Grupu Ran {{ t.grupuran }} <span class="badge badge-warning">{{ t.totalPasiente }}</span></a></li>
+            {% endfor %}
+            </ol>
+          <hr>
+          <p class="badge badge-success">Informasaun Stock RAN ne'ebe armazena hela iha Banco de Sangue!</p>
+          <hr>
+          <div class="row">
+            {% for data in BloodStockList %}
+              <div class="col-sm-3">
+                <div class="border border-danger">
+                  <div class=" pt-2 pb-1" style="color: black;">
+                    <center> <p style="font-size: 1rem">Grupu RAN {{data.bloodGroup}}<br>
+                      <b class="badge badge-warning" style="font-size: 1rem">{{ data.amount_of_package }}</b>
+                    </p></center>
+                  </div>
+                </div>
+              </div><!--end col-->
+              {%endfor%}
+            </div>
+          {% endif %}
+          {% if page == "form" %}
+          <div class="row">
+            {% include 'conf_side/conf_list.html' %}
+            <div class="col-lg-9">
+              <div class="card">
+                <div class="card-header d-flex justify-content-end text-center">
+                  <div class="text-center border">
+                  </div>
+                </div>
+                <div class="card-body">
+                  {% csrf_token %}
+                  {% crispy form %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+      </section>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

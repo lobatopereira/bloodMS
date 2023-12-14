@@ -1,0 +1,39 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3 p-5">
+  <div class="text-center mb-5">
+    <h4 style="text-transform: uppercase;">Benvindu  </h4>
+    <hr>
+  </div>
+  <div class="row text-center">
+    <div class="col-md-6 mt-5">
+      <h5>Sistema Informasaun Stock Ran iha Banco de Sangue  <br>(SISRA)</h5>
+      <img align="center" src="{% static 'main/images/qw.png' %}" height="60%" width="35%" class="mt-4">
+      <h5>Hospital Nacional Guido Valadares  <br>(HNGV)</h5>
+    </div>
+    <div class="col-md-6 mt-5 border pt-5">
+      <h5 style="text-transform: uppercase;">STOCK RAN BAZEIA BA TIPU RAN</h5>
+      <div class="mt-5">
+        {% for data in bloodStock %}
+        <h6 style="text-transform: capitalize;"><a href="{% url 'home' %}">Grupu Ran {{data.bloodGroup}} : pakote {{data.amount_of_package}}</a></h6>
+        {% endfor %}
+      </div>
+        
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}
+

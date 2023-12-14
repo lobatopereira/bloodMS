@@ -1,0 +1,88 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<section class="container">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-end text-center">
+                  <div class="text-center border">
+                     <a href="{% url 'b-report-dash-tabular' %}" class="btn btn-sm btn-dark" title="Relatoriu Tabular"><i class="fa fa-list"></i> Relatoriu Tabular</a>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-4">
+                      <h5 align="center">Total Stock RAN Ativu no Uzadu</h5><hr/>
+                      <div id="container" style="width: 100%; height: 300px;">
+                          <canvas id="bloodbankedusedstockbankChart_data"></canvas>
+                      </div>
+                    </div><!--end col-->
+                    <div class="col-sm-4">
+                      <h5 align="center">Total Stock RAN iha Banco</h5><hr/>
+                      <div id="container" style="width: 100%; height: 300px;">
+                          <canvas id="bloodstockbankChart_data"></canvas>
+                      </div>
+                    </div><!--end col-->
+                    <div class="col-sm-4">
+                      <h5 align="center">Total Pedidu tuir Enfermaria</h5><hr/>
+                      <div id="container" style="width: 100%; height: 300px;">
+                          <canvas id="bloodenfrequestChart_data"></canvas>
+                      </div>
+                    </div><!--end col-->
+
+                    <div class="col-sm-12">
+                      <h5 align="center">Total Ran Tama no Uza iha tinan 2022</h5><hr/>
+                      <div id="container" style="width: 100%; height: 300px;">
+                        <canvas id="gbloodbankedusedoutstockbankthisyear_data"></canvas>
+                      </div>
+                    </div><!--end col-->
+
+                    <div class="col-sm-6 mt-5">
+                      <h5 align="center">Total Ran Tama no Uza bazeia ba tinan</h5><hr/>
+                      <div id="container" style="width: 100%; height: 300px;">
+                        <canvas id="gbloodbankedusedoutstockbankbyyear_data"></canvas>
+                      </div>
+                    </div><!--end col-->
+                    <div class="col-sm-6 mt-5">
+                      <h5 align="center">Total Pasiente bazeia ba Grupu Ran</h5><hr/>
+                      <div id="container" style="width: 100%; height: 300px;">
+                        <canvas id="patientsexbloodgroupbank_data"></canvas>
+                      </div>
+                    </div><!--end col-->
+
+                  </div><!--end row-->
+                </div>
+              </div>
+            </div>
+          </div>
+          
+      </section>
+
+{% endblock %}
+{% block scripts %}
+<!-- Charts-->
+
+<script src="{% static 'main/js/jquery.min.js' %}"></script>
+<script src="{% static 'chart.js/Chart.min.js'%}"></script>
+
+<script>
+  {% include 'chart_js_blood/myoption.js' %}
+  {% include 'chart_js_blood/blood_stock.js' %}
+  {% include 'chart_js_blood/blood_transaction_stock_this_year.js' %}
+  {% include 'chart_js_blood/blood_transaction_stock_by_year.js' %}
+  {% include 'chart_js_blood/blood_banked_used_stock.js' %}
+  {% include 'chart_js_blood/patient_sex_blood_group.js' %}
+  {% include 'chart_js_blood/blood_enfermaria_request.js' %}
+</script>
+{% endblock %}

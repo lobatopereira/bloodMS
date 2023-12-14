@@ -1,0 +1,210 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<section class="container">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              {% if page == "form" or page == "detail" %}
+              <li class="breadcrumb-item"><a href="{% url 'doador-list' %}">Dadus Doador</a></li>
+              {%endif%}
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+          {% if page == "list" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-end text-center">
+                  <div class="text-center border">
+                     <a href="{% url 'doador-add' %}" class="btn btn-sm btn-info" title="Add Data"><i class="fa fa-plus-square"></i> Rejista Doasaun Ran</a>
+                  </div>
+                  <div class="text-center border">
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>No</th>
+                          <th>Naran Kompletu</th>
+                          <th>Seksu</th>
+                          <th>Data Moris</th>
+                          <th>Hela Fatin</th>
+                          <th class="text-center">Grupu Ran</th>
+                          <th>Todan</th>
+                          <th width="15%">Asaun</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in doadorList %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{data.firstname}} {{data.lastname}}</td>
+                          <td>{{data.sex}}</td>
+                          <td>{{data.date_of_birth}}</td>
+                          <td>{{data.address}}</td>
+                          <td class="text-center">{{data.bloodGroup}}</td>
+                          <td>{{data.weight}}</td>
+                          <td>
+                            <div class="d-flex">
+                              <div class="flex-fill"><a href="{% url 'doador-detail-doasaun' data.hashed %}" class="btn btn-sm btn-success" title="Update"><i class="fa fa-list"></i></a></div>
+                              <div class="flex-fill"><a href="{% url 'doador-update' data.hashed %}" class="btn btn-sm btn-primary" title="Update"><i class="fa fa-pencil"></i></a></div>
+                              <div class="flex-fill"> <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#delete-{{ data.id }}" style="text-decoration: none"><i class="fa fa-trash"></i></button></div>
+                            </div>
+                           </td>
+
+                          <div class="modal fade" id="delete-{{ data.id}}"><!-- modal -->
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Delete Doador</h4>
+                                  <button type="button" class="close" data-dismiss="modal">X</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                  Ita Boot hakarak hamoos Dadus Doador ho naran {{data.firstname|upper}} {{data.lastname|upper}}?
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                  <a href="{% url 'doador-delete' data.hashed %}" class="btn btn-info">Yes</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div><!-- endmodal -->
+                        </tr>
+                        {% endfor %}
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <ol class="breadcrumb mb-2 mt-1">
+                <li class="breadcrumb-item"><a style="text-decoration: none;" href="{% url 'doador-list' %}">All <span class="badge badge-warning">{{ listaDoadorCount }}</span></a></li>
+            {% for t in sumariuGrupuRan %}
+                <li class="breadcrumb-item"><a style="text-decoration: none;" href="{% url 'doador-list-bloodgroup' t.id %}">Grupu Ran {{ t.grupuran }} <span class="badge badge-warning">{{ t.totalDoador }}</span></a></li>
+            {% endfor %}
+            </ol>
+          {% endif %}
+          {% if page == "detail" %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-end text-center">
+                    {{title}} husi  <b class="ml-1"> {{doadorData.firstname}} {{doadorData.lastname}}</b>
+                </div>
+                <div class="row pt-5 pl-5 pr-5">
+                  <div class="col-lg-6">
+                    <p><b>Naran Kompletu :</b> {{doadorData.firstname}} {{doadorData.lastname}}</p>
+                    <p><b>Seksu :</b> {{doadorData.sex}} </p>
+                    <p><b>Data Moris :</b> {{doadorData.date_of_birth}}</p>
+                    <p><b>Hela Fatin :</b> {{doadorData.address}}</p>
+                  </div>
+                  <div class="col-lg-6 d-flex justify-content-between">
+                    <div>
+                    <p><b>Grupu Ran :</b> {{doadorData.bloodGroup}}</p>
+                    <p><b>Todan :</b> {{doadorData.weight}} </p>
+                    <p><b>Tensaun :</b> {{doadorData.pressure}}</p>
+                    </div>
+                    <div class="border">
+                      {% if doadorData.image %}
+                        <img src="{{doadorData.image.url}}" width="100%" height="150px">
+                      {% else %}
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="card-body">
+                  <div class="d-flex justify-content-end"><a href="{% url 'doasaun-add' doadorData.hashed %}" class="btn btn-sm btn-primary mb-2"><i class="fa fa-plus-square"></i> Adisiona Dadus Doasaun</a></div>
+                  <div class="table-responsive">
+                    <table id="example"  class="table table-hover table-striped w-100">
+                      <thead>
+                        <tr>
+                          <th>No</th>
+                          <th>Data Doasaun</th>
+                          <th>Grupu Ran</th>
+                          <th>Pakote</th>
+                          <th width="15%">Asaun</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for data in listaDoasaun %}
+                        <tr>
+                          <td scope="row"> {{forloop.counter}} </td>
+                          <td>{{data.donationdate}}</td>
+                          <td>{{data.bloodGroup}}</td>
+                          <td>{{data.package}} {% if data.packageStatus == "Used" %}<small class="badge badge-info">Uza ona</small>{%elif data.packageStatus == "Banked" %}<small class="badge badge-success">Armazena</small>{%endif%}</td>
+                          <td>
+                            {% if data.packageStatus == "Banked" %}
+                            <div class="d-flex">
+                              <div class="flex-fill"><a href="{% url 'doasaun-update' data.hashed %}" class="btn btn-sm btn-primary" title="Update"><i class="fa fa-pencil"></i></a></div>
+                              <div class="flex-fill"> <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#delete-{{ data.id }}" style="text-decoration: none"><i class="fa fa-trash"></i></button></div>
+                            </div>
+                            {% else %}
+                            <p>Favor kontaktu Admin atu halo alterasaun ruma!</p>
+                            {% endif %}
+                           </td>
+
+                          <div class="modal fade" id="delete-{{ data.id}}"><!-- modal -->
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                  <h4 class="modal-title">Delete dadus doasaun</h4>
+                                  <button type="button" class="close" data-dismiss="modal">X</button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                  Ita Boot hakarak hamoos Dadus doasaun husi doador {{data.doador.firstname|upper}} {{data.doador.lastname|upper}}?
+                                </div>
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                                  <a href="{% url 'doasaun-delete' data.hashed %}" class="btn btn-info">Yes</a>
+                                </div>
+                              </div>
+                            </div>
+                        </div><!-- endmodal -->
+                        </tr>
+                        {% endfor %}
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+      </section>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready( function () {
+        var table = $('#example').removeAttr('width').DataTable( {
+            
+        });
+    } );
+</script>
+{% endblock %}

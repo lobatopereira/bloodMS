@@ -1,0 +1,32 @@
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item {{active_survey}}"><a class="nav-link" href="{% url 'BloodStockList' %}"><i class="fa fa-home"></i> STOCK RAN </a></li>
+        <li class="nav-item {{active_survey}}"><a class="nav-link" href="{% url 'home' %}"><i class="fa fa-home"></i> DOADOR </a></li>
+        <!-- <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle {{active_programa}}" href="#" id="programa" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list"></i> PROGRMA</a>
+          <div class="dropdown-menu" aria-labelledby="programa">
+            <a class="dropdown-item" href="{% url 'home' %}"><i class="fa fa-list"></i> Programa</a>
+            <a class="dropdown-item" href="{% url 'home' %}"><i class="fa fa-list"></i> Implementasaun Programa</a>
+          </div>
+        </li> -->
+        <!-- <li class="nav-item {{active_funsionariu}}"><a class="nav-link" href="{% url 'home' %}"><i class="fa fa-users"></i> FUNSIONARIU </a></li> -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle {{active_relatoriu}}" href="#" id="relatoriu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-list"></i> RELATORIU</a>
+          <div class="dropdown-menu" aria-labelledby="relatoriu">
+            <a class="dropdown-item" href="{% url 'b-report-dash-tabular' %}"><i class="fa fa-list"></i> Tabular</a>
+            <a class="dropdown-item" href="{% url 'b-dash-charts' %}"><i class="fa fa-list"></i> Grafiku</a>
+          </div>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'konfigurasaun' %}"><i class="fa fa-cogs"></i> KONFIGURASAUN </a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user-o"></i> {{ request.user.username|upper }}</a>
+          <div class="dropdown-menu" aria-labelledby="profile">
+            <a class="dropdown-item" href="{% url 'manageAccount' %}"><i class="fa fa-cog"></i> Account</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
+          </div>
+        </li>
+
+      </ul>
+    </div>

@@ -1,0 +1,1 @@
+from .view_b_patient import *

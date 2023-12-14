@@ -1,0 +1,71 @@
+{% extends 'main/layout.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<section class="container">
+          <!-- Page Header-->
+          <header> 
+            <ol class="breadcrumb mb-1 mt-1">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Varanda</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'doador-list' %}">Lista Doador</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{title}}</li>
+            </ol>
+          </header>
+                    {% if messages %}
+                        {% for message in messages %} 
+                            <div class="alert alert-{{ message.tags }} alert-dismissable">
+                              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                              {{message}}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header d-flex justify-content-end text-center">
+                  Formulariu {{title}}
+                </div>
+                <div class="card-body">
+                  {% csrf_token %}
+                  {% crispy form %}
+                </div>
+              </div>
+            </div>
+          </div>
+      </section>
+<script src="{% static 'main/js/jquery.min.js'%}"></script>
+<script type="text/javascript">
+            $("#id_municipality").change(function () {
+              var municipalityId = $(this).val();
+              $.ajax({
+                url: "{% url 'ajax_load_posts' %}",
+                data: {
+                  'municipality': municipalityId
+                },
+                success: function (data) {
+                  $("#id_administrativepost").html(data);
+                }
+
+              });
+            });
+            $("#id_administrativepost").change(function () {
+              var postId = $(this).val();
+              $.ajax({
+                url: "{% url 'ajax_load_villages' %}",
+                data: {
+                  'post': postId
+                },
+                success: function (data) {
+                  $("#id_village").html(data);
+                }
+              });
+            });
+            //load Imagen
+            function myFunction() {
+              var image = document.getElementById("output");
+              image.src = URL.createObjectURL(event.target.files[0]);
+            }
+</script>
+{% endblock %}
